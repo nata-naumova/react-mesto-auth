@@ -1,0 +1,6 @@
+.header__info {
+    display: flex;
+    align-items: start;
+    gap: 24px;
+    margin-right: 27px;
+}
