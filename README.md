@@ -39,4 +39,4 @@ npm start
 
 - Документация Create React App: [ссылка](https://ru.reactjs.org/docs/create-a-new-react-app.html)
 
-- [Демо проекта на Github Pages] (*)
+- [Демо проекта на Github Pages] (https://nata-naumova.github.io/react-mesto-auth/)
