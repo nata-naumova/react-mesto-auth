@@ -2,19 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function Register({ handleSubmitRegister }) {
-    const [values, setValues] = React.useState({ email: '', password: '' });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setValues({
-            ...values,
-            [name]: value,
-        });
-    };
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault(e);
-        handleSubmitRegister(values);
+        handleSubmitRegister({ email, password })
     };
 
     return (
@@ -28,8 +21,9 @@ function Register({ handleSubmitRegister }) {
                     name="email"
                     type="text"
                     placeholder="Email"
-                    value={values.email}
-                    onChange={handleChange}
+                    value={email}
+                    autoComplete="email"
+                    onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                     className="auth__input"
@@ -38,8 +32,9 @@ function Register({ handleSubmitRegister }) {
                     name="password"
                     type="password"
                     placeholder="Пароль"
-                    value={values.password}
-                    onChange={handleChange}
+                    value={password}
+                    autoComplete="password"
+                    onChange={(e) => setPassword(e.target.value)}
                 />
                 <button type="submit" onSubmit={handleSubmit} className="auth__btn">
                     Зарегистрироваться

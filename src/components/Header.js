@@ -3,7 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 
 export function Header({ src, email, handleSignOut }) {
     const location = useLocation();
-    const renderLogin = () => {
+
+    const forLogin = () => {
         return (
             <div className="header__info">
                 <Link to="/sign-up" className="header__link">
@@ -12,7 +13,7 @@ export function Header({ src, email, handleSignOut }) {
             </div>
         )
     }
-    const renderReg = () => {
+    const forReg = () => {
         return (
             <div className="header__info">
                 <Link to="/sign-in" className="header__link">
@@ -21,11 +22,11 @@ export function Header({ src, email, handleSignOut }) {
             </div>
         )
     }
-    const renderPage = () => {
+    const forPage = () => {
         return (
             <div className="header__info">
                 <p className="header__title">{email}</p>
-                <button className="header__btn" onClick={handleSignOut}>
+                <button className="header__btn btn" onClick={handleSignOut}>
                     Выйти
                 </button>
             </div>
@@ -33,11 +34,11 @@ export function Header({ src, email, handleSignOut }) {
     }
     const render = () => {
         if (location.pathname === '/') {
-            return renderPage()
+            return forPage();
         } else if (location.pathname === '/sign-in') {
-            return renderLogin()
+            return forLogin();
         } else if (location.pathname === '/sign-up') {
-            return renderReg()
+            return forReg();
         }
     }
     return (

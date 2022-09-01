@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import '../index.css';
 import logo from '../logo.svg';
@@ -19,7 +19,7 @@ import InfoTooltip from "./InfoTooltip";
 import { ProtectedRoute } from "./ProtectedRoute";
 import Login from "./Login";
 import Register from "./Register";
-import * as auth from "../Auth";
+import * as Auth from "../Auth";
 
 function App() {
   /* ---------- Переменные состояния ----------- */
@@ -32,13 +32,13 @@ function App() {
 
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [email, setEmail] = React.useState('');
-  const [InfoTooltipIsOpened, setInfoTooltipIsOpened] = React.useState(false);
   const [registration, setRegisration] = React.useState(false);
+  const [InfoTooltipIsOpened, setInfoTooltipIsOpened] = React.useState(false);
   const history = useHistory();
   const token = localStorage.getItem('token');
 
   /* ---------- Эффект при монтировании ----------- */
-  React.useEffect(() => {
+  useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userData, initialCards]) => {
         setCurrentUser(userData);
@@ -49,9 +49,9 @@ function App() {
       });
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (token) {
-      auth.checkToken(token)
+      Auth.checkToken(token)
         .then((res) => {
           if (res) {
             setEmail(res.data.email);
@@ -143,33 +143,37 @@ function App() {
     })
   }
 
-  /* ---------- Регистрация и авторизация ----------- */
-  function handleSubmitRegister(values) {
-    auth.register(values.password, values.email)
+  /* ---------- Регистрация ----------- */
+  function handleSubmitRegister({ email, password }) {
+    Auth.register(password, email)
       .then((res) => {
         if (res) {
-          setInfoTooltipIsOpened(true)
-          setRegisration(true)
+          setInfoTooltipIsOpened(true);
+          setRegisration(true);
           history.push('/sign-in');
         } else {
-          setInfoTooltipIsOpened(true)
-          setRegisration(false)
+          setInfoTooltipIsOpened(true);
+          setRegisration(false);
         }
       })
       .catch((err) => {
         console.log(err);
       });
   }
-  function handleSubmitLogin(values) {
-    auth.authorize(values.password, values.email)
+
+  /* ---------- Авторизация ----------- */
+  function handleSubmitLogin({ email, password }) {
+    Auth.authorize(password, email)
       .then((data) => {
         if (data.token) {
           setLoggedIn(true);
-          history.push("/");
+          history.push('/');
         }
       })
       .catch((err) => console.log(err));
   }
+
+  /* ---------- Кнопка Выйти ----------- */
   function handleSignOut() {
     localStorage.removeItem('token');
     setEmail('');
@@ -233,6 +237,7 @@ function App() {
           onClose={closeAllPopups}
           registration={registration}
         />
+
       </div>
     </CurrentUserContext.Provider>
   );

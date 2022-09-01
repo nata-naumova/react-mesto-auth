@@ -7,7 +7,7 @@ function InfoTooltip({ isOpen, onClose, registration }) {
         if (registration) {
             return (
                 <React.Fragment>
-                    <img src={succesSvg} alt="Регистрация прошла успешно!" className="popup__icon" />
+                    <img className="popup__icon" src={succesSvg} alt="Регистрация прошла успешно!" />
                     <h2 className="popup__title popup__title_type_tooltip">Вы успешно зарегистрировались!</h2>
                     <button className="btn popup__close" onClick={onClose}></button>
                 </React.Fragment>
@@ -15,7 +15,7 @@ function InfoTooltip({ isOpen, onClose, registration }) {
         } else {
             return (
                 <React.Fragment>
-                    <img src={errorSvg} alt="Ошибка регистрации!" className="popup__icon" />
+                    <img className="popup__icon" src={errorSvg} alt="Ошибка регистрации!" />
                     <h2 className="popup__title popup__title_type_tooltip">Что-то пошло не так! Попробуйте еще раз.</h2>
                     <button className="btn popup__close" onClick={onClose}></button>
                 </React.Fragment>

@@ -1,19 +1,12 @@
 import React from "react";
 
 function Login({ handleSubmitLogin }) {
-    const [values, setValues] = React.useState({ email: '', password: '' });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setValues({
-            ...values,
-            [name]: value,
-        });
-    };
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault(e);
-        handleSubmitLogin(values);
+        handleSubmitLogin({ email, password })
     };
 
     return (
@@ -27,8 +20,9 @@ function Login({ handleSubmitLogin }) {
                     name="email"
                     type="text"
                     placeholder="Email"
-                    value={values.email}
-                    onChange={handleChange}
+                    value={email}
+                    autoComplete="email"
+                    onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                     className="auth__input"
@@ -37,8 +31,9 @@ function Login({ handleSubmitLogin }) {
                     name="password"
                     type="password"
                     placeholder="Пароль"
-                    value={values.password}
-                    onChange={handleChange}
+                    value={password}
+                    autoComplete="password"
+                    onChange={(e) => setPassword(e.target.value)}
                 />
                 <button type="submit" onSubmit={handleSubmit} className="auth__btn">
                     Войти
