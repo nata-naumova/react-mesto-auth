@@ -19,7 +19,7 @@ import InfoTooltip from "./InfoTooltip";
 import { ProtectedRoute } from "./ProtectedRoute";
 import Login from "./Login";
 import Register from "./Register";
-import * as Auth from "../Auth";
+import * as Auth from "../utils/Auth";
 
 function App() {
   /* ---------- Переменные состояния ----------- */
@@ -48,19 +48,6 @@ function App() {
         console.log(`Ошибка: ${err}`);
       });
   }, []);
-
-  useEffect(() => {
-    if (token) {
-      Auth.checkToken(token)
-        .then((res) => {
-          if (res) {
-            setEmail(res.data.email);
-            setLoggedIn(true);
-            history.push('/')
-          }
-        })
-    }
-  }, [history, token]);
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
@@ -123,6 +110,10 @@ function App() {
     })
   }
 
+  const openInfoTooltip = () => {
+    setInfoTooltipIsOpened(true);
+  };
+
   /* ---------- Закрытие всех модальных окон ----------- */
   const closeAllPopups = () => {
     setIsEditAvatarPopupOpen(false);
@@ -147,17 +138,14 @@ function App() {
   function handleSubmitRegister({ email, password }) {
     Auth.register(password, email)
       .then((res) => {
-        if (res) {
-          setInfoTooltipIsOpened(true);
-          setRegisration(true);
-          history.push('/sign-in');
-        } else {
-          setInfoTooltipIsOpened(true);
-          setRegisration(false);
-        }
+        setRegisration(true);
+        openInfoTooltip();
+        history.push('/sign-in');
       })
       .catch((err) => {
         console.log(err);
+        setRegisration(false);
+        openInfoTooltip();
       });
   }
 
@@ -165,25 +153,54 @@ function App() {
   function handleSubmitLogin({ email, password }) {
     Auth.authorize(password, email)
       .then((data) => {
-        if (data.token) {
-          setLoggedIn(true);
-          history.push('/');
-        }
+        setLoggedIn(true);
+        localStorage.setItem('jwt', data.token);
+        handleCheckToken();
+        history.push('/');
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        openInfoTooltip();
+      });
   }
 
   /* ---------- Кнопка Выйти ----------- */
   function handleSignOut() {
-    localStorage.removeItem('token');
-    setEmail('');
+    setLoggedIn(false);
+    localStorage.removeItem('jwt');
     history.push('/sign-in');
   }
+
+  /* ---------- Проверка токена ----------- */
+  const handleCheckToken = () => {
+    if (!token) {
+      return
+    }
+    Auth.checkToken(token)
+      .then((res) => {
+        setEmail(res.data.email);
+        setLoggedIn(true);
+        history.push('/');
+      })
+      .catch((err) => console.log(err))
+  }
+
+  useEffect(() => {
+    handleCheckToken();
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      history.push('/');
+    }
+  }, [loggedIn]);
+
+
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header src={logo} email={email} handleSignOut={handleSignOut} />
+        <Header loggedIn={loggedIn} src={logo} email={email} handleSignOut={handleSignOut} />
         <CurrentCardContext.Provider value={cards}>
           <Switch>
             <ProtectedRoute
@@ -237,7 +254,6 @@ function App() {
           onClose={closeAllPopups}
           registration={registration}
         />
-
       </div>
     </CurrentUserContext.Provider>
   );
