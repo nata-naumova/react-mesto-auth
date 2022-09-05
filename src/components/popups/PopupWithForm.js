@@ -14,11 +14,7 @@ function PopupWithForm({ name, title, button, children, isOpen, onClose, onSubmi
                     onSubmit={onSubmit}
                 >
                     {children}
-                    <button
-                        type="submit"
-                        className="popup__btn"
-                        onClick={onClose}
-                    >{button}</button>
+                    <button type="submit" className="popup__btn">{button}</button>
                 </form>
                 <button
                     type="button"

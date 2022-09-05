@@ -35,19 +35,21 @@ function App() {
   const [registration, setRegisration] = React.useState(false);
   const [InfoTooltipIsOpened, setInfoTooltipIsOpened] = React.useState(false);
   const history = useHistory();
-  const token = localStorage.getItem('token');
+  //const token = localStorage.getItem('token');
 
   /* ---------- Эффект при монтировании ----------- */
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, initialCards]) => {
-        setCurrentUser(userData);
-        setCards(initialCards);
-      })
-      .catch((err) => {
-        console.log(`Ошибка: ${err}`);
-      });
-  }, []);
+    if (loggedIn) {
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([userData, initialCards]) => {
+          setCurrentUser(userData);
+          setCards(initialCards);
+        })
+        .catch((err) => {
+          console.log(`Ошибка: ${err}`);
+        });
+    }
+  }, [loggedIn]);
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
@@ -165,7 +167,7 @@ function App() {
   }
 
   /* ---------- Кнопка Выйти ----------- */
-  function handleSignOut() {
+  const handleSignOut = () => {
     setLoggedIn(false);
     localStorage.removeItem('jwt');
     history.push('/sign-in');
@@ -173,6 +175,7 @@ function App() {
 
   /* ---------- Проверка токена ----------- */
   const handleCheckToken = () => {
+    const token = localStorage.getItem('jwt');
     if (!token) {
       return
     }
